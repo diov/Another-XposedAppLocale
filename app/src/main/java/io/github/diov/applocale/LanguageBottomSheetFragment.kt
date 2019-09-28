@@ -1,6 +1,5 @@
 package io.github.diov.applocale
 
-import android.app.Dialog
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -9,7 +8,6 @@ import android.widget.TextView
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import kotlinx.android.synthetic.main.framg_language_sheet.*
 import java.util.Locale
@@ -24,10 +22,6 @@ import java.util.Locale
 class LanguageBottomSheetFragment(private val appInfo: AppInfo) : BottomSheetDialogFragment() {
 
     private var languageSelectedCallback: LanguageSelectedCallback? = null
-
-    override fun getTheme(): Int = R.style.AppTheme_BottomSheetDialog
-
-    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog = BottomSheetDialog(requireContext(), theme)
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.framg_language_sheet, container, false)
@@ -45,6 +39,9 @@ class LanguageBottomSheetFragment(private val appInfo: AppInfo) : BottomSheetDia
 
         languageListView.layoutManager = LinearLayoutManager(requireContext())
         languageListView.adapter = LanguageAdapter()
+        languageResetButton.setOnClickListener {
+            languageSelectedCallback?.invoke(null)
+        }
     }
 
     fun show(manager: FragmentManager) {
@@ -80,16 +77,16 @@ class LanguageBottomSheetFragment(private val appInfo: AppInfo) : BottomSheetDia
 
         private val languageList =
             listOf(
-                Locale.SIMPLIFIED_CHINESE,
-                Locale.TRADITIONAL_CHINESE,
                 Locale.FRANCE,
-                Locale.ITALY,
-                Locale.UK,
                 Locale.GERMANY,
+                Locale.ITALY,
                 Locale.JAPAN,
-                Locale.KOREA
+                Locale.KOREA,
+                Locale.PRC,
+                Locale.TAIWAN,
+                Locale.UK
             )
     }
 }
 
-typealias LanguageSelectedCallback = (language: Locale) -> Unit
+typealias LanguageSelectedCallback = (language: Locale?) -> Unit

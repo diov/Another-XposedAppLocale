@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/includeSystem"
+        android:checkable="true"
+        android:title="@string/option_include_system"
+        app:showAsAction="collapseActionView" />
+    <item
+        android:id="@+id/onlyModified"
+        android:checkable="true"
+        android:title="@string/option_only_modified"
+        app:showAsAction="collapseActionView" />
+</menu>

@@ -3,4 +3,6 @@
     <string name="search_hint">Type here to search app</string>
 
     <string name="xposed_description">Set language on a per-app basis</string>
+    <string name="option_include_system">Include System Apps</string>
+    <string name="option_only_modified">Only Modified Apps</string>
 </resources>

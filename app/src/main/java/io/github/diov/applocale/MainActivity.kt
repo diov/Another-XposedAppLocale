@@ -1,6 +1,8 @@
 package io.github.diov.applocale
 
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuItem
 import android.view.ViewGroup
 import android.widget.ProgressBar
 import androidx.appcompat.app.AppCompatActivity
@@ -27,6 +29,29 @@ class MainActivity : AppCompatActivity() {
 
         setupView()
         setupViewModel()
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        menuInflater.inflate(R.menu.type_options_menu, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.includeSystem -> {
+                val checked = item.isChecked
+                appInfoModel.updateType(if (checked) AppInfoModel.Type.Default else AppInfoModel.Type.IncludeSystem)
+                item.isChecked = !checked
+                true
+            }
+            R.id.onlyModified -> {
+                val checked = item.isChecked
+                appInfoModel.updateType(if (item.isChecked) AppInfoModel.Type.Default else AppInfoModel.Type.OnlyModified)
+                item.isChecked = !checked
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
     }
 
     private fun setupView() {
