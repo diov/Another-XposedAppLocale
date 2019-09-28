@@ -62,7 +62,7 @@ class LanguageBottomSheetFragment(private val appInfo: AppInfo) : BottomSheetDia
 
         override fun onBindViewHolder(holder: LanguageViewHolder, position: Int) {
             val locale = languageList[position]
-            val title = "${locale.flagEmoji} ${locale.toLanguageTag()}"
+            val title = "${locale.flagEmoji}   ${locale.toLanguageTag()}"
             (holder.itemView as TextView).text = title
             holder.itemView.setOnClickListener {
                 languageSelectedCallback?.invoke(locale)
