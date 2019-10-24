@@ -4,12 +4,11 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
+import androidx.core.view.forEachIndexed
 import androidx.fragment.app.FragmentManager
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
-import kotlinx.android.synthetic.main.framg_language_sheet.*
+import com.google.android.material.chip.Chip
+import kotlinx.android.synthetic.main.fragment_language_sheet.*
 import java.util.Locale
 
 /**
@@ -24,7 +23,7 @@ class LanguageBottomSheetFragment(private val appInfo: AppInfo) : BottomSheetDia
     private var languageSelectedCallback: LanguageSelectedCallback? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.framg_language_sheet, container, false)
+        return inflater.inflate(R.layout.fragment_language_sheet, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -37,10 +36,29 @@ class LanguageBottomSheetFragment(private val appInfo: AppInfo) : BottomSheetDia
         languageAppIcon.setImageDrawable(LocaleApp.app.packageManager.getApplicationIcon(appInfo.applicationInfo))
         languageAppTitle.text = appInfo.name
 
-        languageListView.layoutManager = LinearLayoutManager(requireContext())
-        languageListView.adapter = LanguageAdapter()
-        languageResetButton.setOnClickListener {
-            languageSelectedCallback?.invoke(null)
+        val defaultIndex = languageList.indexOfFirst { locale ->
+            locale.toString() == appInfo.localeString
+        }
+        languageGroupView.forEachIndexed { index, view ->
+            val chip = view as Chip
+            val locale = languageList[index]
+            val title = "${locale.flagEmoji} ${locale.toLanguageTag()}"
+            chip.text = title
+            chip.isChecked = index == defaultIndex
+        }
+        languageGroupView.setOnCheckedChangeListener { _, checkedId ->
+            val language = when (checkedId) {
+                R.id.frenchChip -> languageList[0]
+                R.id.germanChip -> languageList[1]
+                R.id.italianChip -> languageList[2]
+                R.id.japaneseChip -> languageList[3]
+                R.id.koreanChip -> languageList[4]
+                R.id.simplifiedChineseChip -> languageList[5]
+                R.id.traditionalChineseChip -> languageList[6]
+                R.id.englishChip -> languageList[7]
+                else -> null
+            }
+            languageSelectedCallback?.invoke(language)
         }
     }
 
@@ -51,26 +69,6 @@ class LanguageBottomSheetFragment(private val appInfo: AppInfo) : BottomSheetDia
     fun setLanguageSelectedCallback(callback: LanguageSelectedCallback) {
         this.languageSelectedCallback = callback
     }
-
-    private inner class LanguageAdapter : RecyclerView.Adapter<LanguageViewHolder>() {
-        override fun getItemCount(): Int = languageList.count()
-
-        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): LanguageViewHolder {
-            val itemView = LayoutInflater.from(parent.context).inflate(R.layout.item_language, parent, false)
-            return LanguageViewHolder(itemView)
-        }
-
-        override fun onBindViewHolder(holder: LanguageViewHolder, position: Int) {
-            val locale = languageList[position]
-            val title = "${locale.flagEmoji}   ${locale.toLanguageTag()}"
-            (holder.itemView as TextView).text = title
-            holder.itemView.setOnClickListener {
-                languageSelectedCallback?.invoke(locale)
-            }
-        }
-    }
-
-    private inner class LanguageViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
 
     companion object {
         private const val TAG = "io.github.diov.applocale.LanguageBottomSheetFragment"
